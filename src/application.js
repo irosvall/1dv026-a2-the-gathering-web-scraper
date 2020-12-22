@@ -6,6 +6,7 @@
  */
 
 import validator from 'validator'
+import { CalendarAvailabilityController } from './calendar-availability-controller.js'
 
 /**
  * Encapsulates a Node application.
@@ -56,6 +57,6 @@ export class Application {
    * Runs the application.
    */
   async run () {
-
+    console.log(await CalendarAvailabilityController.checkAvailableDays('https://cscloud6-127.lnu.se/scraper-site-1/calendar/'))
   }
 }

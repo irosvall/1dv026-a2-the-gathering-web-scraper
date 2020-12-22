@@ -1,5 +1,5 @@
 /**
- * The scrape-calendar-availability module.
+ * The calendar-availability-scraper module.
  *
  * @author Ida Rosvall <ir222gn@student.lnu.se
  * @version 1.0.0
@@ -13,7 +13,7 @@ const { JSDOM } = jsdom
  *
  * @class
  */
-export class ScrapeCalendarAvailability {
+export class CalendarAvailabilityScraper {
   /**
    * Scrapes a website of its links.
    *
