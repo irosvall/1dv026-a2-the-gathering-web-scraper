@@ -6,7 +6,9 @@
  */
 
 import validator from 'validator'
+import { WriteToConsole } from './write-to-console.js'
 import { CalendarAvailabilityController } from './calendar-availability-controller.js'
+import { LinkScraper } from './link-scraper.js'
 
 /**
  * Encapsulates a Node application.
@@ -57,6 +59,10 @@ export class Application {
    * Runs the application.
    */
   async run () {
-    console.log(await CalendarAvailabilityController.checkAvailableDays('https://cscloud6-127.lnu.se/scraper-site-1/calendar/'))
+    const links = await LinkScraper.scrapeWebsiteLinks(this._url)
+    WriteToConsole.scrapingLinksSucceed()
+
+    const availableDays = await CalendarAvailabilityController.checkAvailableDays(links[0])
+    WriteToConsole.scrapingAvailableDaysSucceed()
   }
 }
