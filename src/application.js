@@ -60,9 +60,11 @@ export class Application {
    * Runs the application.
    */
   async run () {
+    // Scrape links to calender, cinema and restaurant.
     const links = await LinkScraper.scrapeWebsiteLinks(this._url)
     WriteToConsole.scrapingLinksSucceed()
 
+    // Scrape available days.
     const availableDays = await CalendarAvailabilityController.checkAvailableDays(links[0])
     WriteToConsole.scrapingAvailableDaysSucceed()
 
@@ -70,13 +72,17 @@ export class Application {
       throw new Error('The calendars shares no available day.')
     }
 
-    const showtimes = []
+    // Scrape available showtimes.
+    const showtimesPromise = []
     for (const day of availableDays) {
       const showtimesController = new ShowtimesController(links[1], day)
-      showtimes.push(showtimesController.checkShowtimes())
+      showtimesPromise.push(showtimesController.checkShowtimes())
     }
+    const nonOrganizedShowtimes = await Promise.all(showtimesPromise)
+    const showtimes = nonOrganizedShowtimes.flat()
+    WriteToConsole.scrapingShowtimesSucceed()
 
     console.log(availableDays)
-    console.log(await Promise.all(showtimes))
+    console.log(showtimes)
   }
 }

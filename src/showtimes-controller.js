@@ -35,13 +35,6 @@ export class ShowtimesController {
      * @type {string}
      */
     this._day = day
-
-    /**
-     * The day to check available movies.
-     *
-     * @type {object[]} An array containing objects with available showtimes.
-     */
-    this._showtimes = []
   }
 
   /**
@@ -50,50 +43,26 @@ export class ShowtimesController {
    * @returns {object[]} An array containing objects with available showtimes.
    */
   async checkShowtimes () {
-    if (this._day === 'friday') {
-      for (let i = 1; i < 4; i++) {
-        let res = await fetch(`${this._url}/check?day=05&movie=0${i}`)
-        res = await res.json()
-        for (let j = 0; j < res.length; j++) {
-          if (res[j].status === 1) {
-            this._showtimes.push({
-              day: `${this._day}`,
-              time: `${res[j].time}`,
-              title: `${await this._scrapeMovieTitle(`0${i}`)}`
-            })
-          }
-        }
-      }
-    } else if (this._day === 'saturday') {
-      for (let i = 1; i < 4; i++) {
-        let res = await fetch(`${this._url}/check?day=06&movie=0${i}`)
-        res = await res.json()
-        for (let j = 0; i < res.length; i++) {
-          if ([j].status === 1) {
-            this._showtimes.push({
-              day: `${this._day}`,
-              time: `${[j].time}`,
-              title: `${await this._scrapeMovieTitle(`0${i}`)}`
-            })
-          }
-        }
-      }
-    } else if (this._day === 'sunday') {
-      for (let i = 1; i < 4; i++) {
-        let res = await fetch(`${this._url}/check?day=07&movie=0${i}`)
-        res = await res.json()
-        for (let j = 0; i < res.length; i++) {
-          if ([j].status === 1) {
-            this._showtimes.push({
-              day: `${this._day}`,
-              time: `${[j].time}`,
-              title: `${await this._scrapeMovieTitle(`0${i}`)}`
-            })
-          }
+    const showtimes = []
+    const dayId = this._createDayId()
+
+    for (let i = 1; i < 4; i++) {
+      let res = await fetch(`${this._url}/check?day=${dayId}&movie=0${i}`)
+      res = await res.json()
+      for (let j = 0; j < res.length; j++) {
+        // Checks if there is any available seats, if so, push it to available showtimes.
+        if (res[j].status === 1) {
+          const movieTitle = await this._scrapeMovieTitle(`0${i}`)
+          showtimes.push({
+            day: `${this._day}`,
+            time: `${res[j].time}`,
+            title: `${movieTitle}`
+          })
         }
       }
     }
-    return this._showtimes
+
+    return showtimes
   }
 
   /**
@@ -112,5 +81,24 @@ export class ShowtimesController {
     } catch {
       throw new Error('Failed scraping the movie name')
     }
+  }
+
+  /**
+   * Creates a id for a weekend day.
+   *
+   * @returns {string} The day id.
+   */
+  _createDayId () {
+    let dayId = ''
+    if (this._day === 'friday') {
+      dayId = '05'
+    } else if (this._day === 'saturday') {
+      dayId = '06'
+    } else if (this._day === 'sunday') {
+      dayId = '07'
+    } else {
+      throw new Error('Not a valid day')
+    }
+    return dayId
   }
 }
