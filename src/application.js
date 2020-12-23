@@ -7,8 +7,9 @@
 
 import validator from 'validator'
 import { WriteToConsole } from './write-to-console.js'
-import { CalendarAvailabilityController } from './calendar-availability-controller.js'
 import { LinkScraper } from './link-scraper.js'
+import { CalendarAvailabilityController } from './calendar-availability-controller.js'
+import { ShowtimesController } from './showtimes-controller.js'
 
 /**
  * Encapsulates a Node application.
@@ -64,5 +65,18 @@ export class Application {
 
     const availableDays = await CalendarAvailabilityController.checkAvailableDays(links[0])
     WriteToConsole.scrapingAvailableDaysSucceed()
+
+    if (availableDays.length === 0) {
+      throw new Error('The calendars shares no available day.')
+    }
+
+    const showtimes = []
+    for (const day of availableDays) {
+      const showtimesController = new ShowtimesController(links[1], day)
+      showtimes.push(showtimesController.checkShowtimes())
+    }
+
+    console.log(availableDays)
+    console.log(await Promise.all(showtimes))
   }
 }
