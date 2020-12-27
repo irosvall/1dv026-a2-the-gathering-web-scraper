@@ -10,6 +10,7 @@ import { WriteToConsole } from './write-to-console.js'
 import { LinkScraper } from './link-scraper.js'
 import { CalendarAvailabilityController } from './calendar-availability-controller.js'
 import { ShowtimesController } from './showtimes-controller.js'
+import { DinningReservationsController } from './dinning-reservations-controller.js'
 
 /**
  * Encapsulates a Node application.
@@ -81,6 +82,10 @@ export class Application {
     const nonOrganizedShowtimes = await Promise.all(showtimesPromise)
     const showtimes = nonOrganizedShowtimes.flat()
     WriteToConsole.scrapingShowtimesSucceed()
+
+    // Scrape possible dinning reservations.
+    const dinningReservationsController = new DinningReservationsController(links[2], 'friday')
+    dinningReservationsController.checkDinningReservations()
 
     console.log(availableDays)
     console.log(showtimes)
