@@ -30,6 +30,34 @@ export class Application {
      * @type {string}
      */
     this.url = url
+
+    /**
+     * An array of links to the calender, cinema and restaurant.
+     *
+     * @type {Array}
+     */
+    this._links = undefined
+
+    /**
+     * An array of available days(s) on everyone's calendars.
+     *
+     * @type {Array}
+     */
+    this._availableDays = undefined
+
+    /**
+     * An array of available showtimes.
+     *
+     * @type {Array}
+     */
+    this._availableShowtimes = undefined
+
+    /**
+     * An array of available dinning times.
+     *
+     * @type {Array}
+     */
+    this._availableDinningTimes = undefined
   }
 
   /**
@@ -61,34 +89,59 @@ export class Application {
    * Runs the application.
    */
   async run () {
-    // Scrape links to calender, cinema and restaurant.
-    const links = await LinkScraper.scrapeWebsiteLinks(this._url)
-    WriteToConsole.scrapingLinksSucceed()
+    await this._scrapeLinks()
+    await this._scrapeAvailableDays()
+    await this._scrapeShowtimes()
+    await this._scrapeDinningReservations()
+    console.log(this._availableShowtimes)
+    console.log(this._availableDinningTimes)
+  }
 
-    // Scrape available days.
-    const availableDays = await CalendarAvailabilityController.getAvailableDays(links[0])
+  /**
+   * Scrape links to calender, cinema and restaurant.
+   */
+  async _scrapeLinks () {
+    this._links = await LinkScraper.scrapeWebsiteLinks(this._url)
+    WriteToConsole.scrapingLinksSucceed()
+  }
+
+  /**
+   * Scrape available day(s) on everyone's calendars.
+   */
+  async _scrapeAvailableDays () {
+    this._availableDays = await CalendarAvailabilityController.getAvailableDays(this._links[0])
     WriteToConsole.scrapingAvailableDaysSucceed()
 
-    if (availableDays.length === 0) {
+    if (this._availableDays.length === 0) {
       throw new Error('The calendars shares no available day.')
     }
+  }
 
-    // Scrape available showtimes.
+  /**
+   * Scrape available showtimes.
+   */
+  async _scrapeShowtimes () {
     const showtimesPromise = []
-    for (const day of availableDays) {
-      const showtimesController = new ShowtimesController(links[1], day)
+    for (const day of this._availableDays) {
+      const showtimesController = new ShowtimesController(this._links[1], day)
       showtimesPromise.push(showtimesController.getAvailableShowtimes())
     }
-    const nonOrganizedShowtimes = await Promise.all(showtimesPromise)
-    const showtimes = nonOrganizedShowtimes.flat()
+    const availableShowtimes = await Promise.all(showtimesPromise)
+    this._availableShowtimes = availableShowtimes.flat()
     WriteToConsole.scrapingShowtimesSucceed()
+  }
 
-    // Scrape possible dinning reservations.
-    const dinningReservationsController = new DinningReservationsController(links[2], 'friday')
-    const dinningTimes = await dinningReservationsController.getAvailableDinningTimes()
-
-    console.log(availableDays)
-    console.log(showtimes)
-    console.log(dinningTimes)
+  /**
+   * Scrape possible dinning reservations.
+   */
+  async _scrapeDinningReservations () {
+    const dinningTimesPromise = []
+    for (const day of this._availableDays) {
+      const dinningReservationsController = new DinningReservationsController(this._links[2], day)
+      dinningTimesPromise.push(dinningReservationsController.getAvailableDinningTimes())
+    }
+    const availableDinningTimes = await Promise.all(dinningTimesPromise)
+    this._availableDinningTimes = availableDinningTimes.flat()
+    WriteToConsole.scrapingReservationsSucceed()
   }
 }
