@@ -50,15 +50,7 @@ export class DinningReservationsController {
    * @returns {object[]} An array containing objects with available times for dinning reservations.
    */
   async checkDinningReservations () {
-    const logInRes = await fetch(`${this._url}login`, {
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded'
-      },
-      body: 'username=zeke&password=coys&submit=login',
-      method: 'POST',
-      redirect: 'manual'
-    })
-    this._extractCookie(logInRes)
+    await this._getLoginCookie()
 
     const res = await fetch(`${this._url}login/booking`, {
       headers: {
@@ -68,7 +60,6 @@ export class DinningReservationsController {
     const htmlText = await res.text()
 
     const dom = new JSDOM(htmlText)
-    console.log(this._day.slice(0, 3))
 
     const availableTimes = Array.from(dom.window.document.querySelectorAll(`input[name="group1"][value^="${this._day.slice(0, 3)}"] ~ span`))
       .map(element => {
@@ -78,7 +69,27 @@ export class DinningReservationsController {
           time: `${element.textContent.trim().split(' ')[0]}`
         }
       })
-    console.log(availableTimes)
+    return availableTimes
+  }
+
+  /**
+   * Log in on the booking site and saves its cookie.
+   */
+  async _getLoginCookie () {
+    let res
+    try {
+      res = await fetch(`${this._url}login`, {
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded'
+        },
+        body: 'username=zeke&password=coys&submit=login',
+        method: 'POST',
+        redirect: 'manual'
+      })
+    } catch {
+      throw new Error('Couldn\'t fetch the login')
+    }
+    this._extractCookie(res)
   }
 
   /**
