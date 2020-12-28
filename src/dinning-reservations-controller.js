@@ -52,13 +52,28 @@ export class DinningReservationsController {
   async checkDinningReservations () {
     const dinningReservations = []
 
-    const res = await fetch(`${this._url}/login`, {
+    const logInRes = await fetch(`${this._url}login`, {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
       body: 'username=zeke&password=coys&submit=login',
-      method: 'POST'
+      method: 'POST',
+      redirect: 'manual'
     })
-    this._extractCookie(res)
+    this._extractCookie(logInRes)
+
+    const res = await fetch(`${this._url}login/booking`, {
+      headers: {
+        cookie: `${this._cookie}`
+      }
+    })
   }
 
+  /**
+   * Parses a cookie. Leaving out the text after the first ';'.
+   *
+   * @param {Response} res - The response from doing a log in.
+   */
   _extractCookie (res) {
     this._cookie = res.headers.raw()['set-cookie'][0]
       .split(';')[0]
