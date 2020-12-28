@@ -52,15 +52,11 @@ export class DinningReservationsController {
   async checkDinningReservations () {
     await this._getLoginCookie()
 
-    const res = await fetch(`${this._url}login/booking`, {
-      headers: {
-        cookie: `${this._cookie}`
-      }
-    })
-    const htmlText = await res.text()
+    const bookingSiteHtml = await this._getBookingSite()
 
-    const dom = new JSDOM(htmlText)
+    const dom = new JSDOM(bookingSiteHtml)
 
+    // Creates an array of the available booking times.
     const availableTimes = Array.from(dom.window.document.querySelectorAll(`input[name="group1"][value^="${this._day.slice(0, 3)}"] ~ span`))
       .map(element => {
         return {
@@ -90,6 +86,25 @@ export class DinningReservationsController {
       throw new Error('Couldn\'t fetch the login')
     }
     this._extractCookie(res)
+  }
+
+  /**
+   * Gets the plain text from the booking site.
+   *
+   * @returns {string} The content as plain text.
+   */
+  async _getBookingSite () {
+    let res
+    try {
+      res = await fetch(`${this._url}login/booking`, {
+        headers: {
+          cookie: `${this._cookie}`
+        }
+      })
+    } catch {
+      throw new Error('Couldn\'t fetch the booking site')
+    }
+    return res.text()
   }
 
   /**
