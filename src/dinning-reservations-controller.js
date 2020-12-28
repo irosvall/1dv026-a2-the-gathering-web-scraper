@@ -47,11 +47,9 @@ export class DinningReservationsController {
   /**
    * Returns the available dinning reservations on a weekend day(friday, saturday or sunday).
    *
-   * @returns {object[]} An array containing objects with available dinning reservations.
+   * @returns {object[]} An array containing objects with available times for dinning reservations.
    */
   async checkDinningReservations () {
-    const dinningReservations = []
-
     const logInRes = await fetch(`${this._url}login`, {
       headers: {
         'content-type': 'application/x-www-form-urlencoded'
@@ -67,6 +65,20 @@ export class DinningReservationsController {
         cookie: `${this._cookie}`
       }
     })
+    const htmlText = await res.text()
+
+    const dom = new JSDOM(htmlText)
+    console.log(this._day.slice(0, 3))
+
+    const availableTimes = Array.from(dom.window.document.querySelectorAll(`input[name="group1"][value^="${this._day.slice(0, 3)}"] ~ span`))
+      .map(element => {
+        return {
+          day: `${this._day}`,
+          // Parse the text content so that only the time is left.
+          time: `${element.textContent.trim().split(' ')[0]}`
+        }
+      })
+    console.log(availableTimes)
   }
 
   /**
