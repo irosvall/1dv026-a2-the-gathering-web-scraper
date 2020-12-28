@@ -42,7 +42,7 @@ export class ShowtimesController {
    *
    * @returns {object[]} An array containing objects with available showtimes.
    */
-  async checkShowtimes () {
+  async getAvailableShowtimes () {
     const showtimes = []
     const dayId = this._createDayId()
 

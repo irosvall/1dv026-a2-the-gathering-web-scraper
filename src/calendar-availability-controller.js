@@ -20,7 +20,7 @@ export class CalendarAvailabilityController {
    * @param {string} url - A url that contains links to people's calendars.
    * @returns {string[]} List containing which weekend day(s) are available.
    */
-  static async checkAvailableDays (url) {
+  static async getAvailableDays (url) {
     const calendarList = await LinkScraper.scrapeWebsiteLinks(url)
 
     // Gets the first calendar to compare.

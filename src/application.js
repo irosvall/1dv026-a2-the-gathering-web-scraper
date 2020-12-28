@@ -66,7 +66,7 @@ export class Application {
     WriteToConsole.scrapingLinksSucceed()
 
     // Scrape available days.
-    const availableDays = await CalendarAvailabilityController.checkAvailableDays(links[0])
+    const availableDays = await CalendarAvailabilityController.getAvailableDays(links[0])
     WriteToConsole.scrapingAvailableDaysSucceed()
 
     if (availableDays.length === 0) {
@@ -77,7 +77,7 @@ export class Application {
     const showtimesPromise = []
     for (const day of availableDays) {
       const showtimesController = new ShowtimesController(links[1], day)
-      showtimesPromise.push(showtimesController.checkShowtimes())
+      showtimesPromise.push(showtimesController.getAvailableShowtimes())
     }
     const nonOrganizedShowtimes = await Promise.all(showtimesPromise)
     const showtimes = nonOrganizedShowtimes.flat()
@@ -85,9 +85,10 @@ export class Application {
 
     // Scrape possible dinning reservations.
     const dinningReservationsController = new DinningReservationsController(links[2], 'friday')
-    dinningReservationsController.checkDinningReservations()
+    const dinningTimes = await dinningReservationsController.getAvailableDinningTimes()
 
     console.log(availableDays)
     console.log(showtimes)
+    console.log(dinningTimes)
   }
 }

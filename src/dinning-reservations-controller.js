@@ -45,11 +45,11 @@ export class DinningReservationsController {
   }
 
   /**
-   * Returns the available dinning reservations on a weekend day(friday, saturday or sunday).
+   * Returns the possible dinning reservations on a weekend day(friday, saturday or sunday).
    *
    * @returns {object[]} An array containing objects with available times for dinning reservations.
    */
-  async checkDinningReservations () {
+  async getAvailableDinningTimes () {
     await this._getLoginCookie()
 
     const bookingSiteHtml = await this._getBookingSite()
