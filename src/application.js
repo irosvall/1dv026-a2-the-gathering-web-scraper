@@ -93,8 +93,7 @@ export class Application {
     await this._scrapeAvailableDays()
     await this._scrapeShowtimes()
     await this._scrapeDinningReservations()
-    console.log(this._availableShowtimes)
-    console.log(this._availableDinningTimes)
+    this._printSuggestions()
   }
 
   /**
@@ -143,5 +142,23 @@ export class Application {
     const availableDinningTimes = await Promise.all(dinningTimesPromise)
     this._availableDinningTimes = availableDinningTimes.flat()
     WriteToConsole.scrapingReservationsSucceed()
+  }
+
+  /**
+   * Console logs out suggestions for day, movie and time to book a table.
+   */
+  _printSuggestions () {
+    for (const showtime of this._availableShowtimes) {
+      for (const dinnerTime of this._availableDinningTimes) {
+        if (showtime.day === dinnerTime.day) {
+          // Only parse the starting hours to numbers for comparison.
+          const showtimeHour = parseInt(showtime.time.split(':')[0])
+          const dinnerTimeHour = parseInt(dinnerTime.time.split('-')[0])
+          if (showtimeHour + 2 === dinnerTimeHour) {
+            console.log(`* On ${showtime.day}, "${showtime.title}" begins at ${showtime.time}, and there is a free table to book between ${dinnerTime.time}.`)
+          }
+        }
+      }
+    }
   }
 }
