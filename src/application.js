@@ -108,7 +108,8 @@ export class Application {
    * Scrape available day(s) on everyone's calendars.
    */
   async _scrapeAvailableDays () {
-    this._availableDays = await CalendarAvailabilityController.getAvailableDays(this._links[0])
+    const calendarAvailabilityController = new CalendarAvailabilityController()
+    this._availableDays = await calendarAvailabilityController.getAvailableDays(this._links[0])
     WriteToConsole.scrapingAvailableDaysSucceed()
 
     if (this._availableDays.length === 0) {
