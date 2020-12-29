@@ -19,9 +19,11 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "colors": "^1.4.0",
     "fs-extra": "^9.0.1",
     "jsdom": "^16.4.0",
     "node-fetch": "^2.6.1",
+    "upper-case-first": "^2.0.2",
     "validator": "^13.1.17"
   },
   "devDependencies": {

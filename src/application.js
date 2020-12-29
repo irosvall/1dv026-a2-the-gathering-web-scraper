@@ -145,9 +145,11 @@ export class Application {
   }
 
   /**
-   * Console logs out suggestions for day, movie and time to book a table.
+   * Calculate and console log out suggestions for day, movie and time to book a table.
    */
   _printSuggestions () {
+    WriteToConsole.suggestionsStart()
+
     for (const showtime of this._availableShowtimes) {
       for (const dinnerTime of this._availableDinningTimes) {
         if (showtime.day === dinnerTime.day) {
@@ -155,7 +157,7 @@ export class Application {
           const showtimeHour = parseInt(showtime.time.split(':')[0])
           const dinnerTimeHour = parseInt(dinnerTime.time.split('-')[0])
           if (showtimeHour + 2 === dinnerTimeHour) {
-            console.log(`* On ${showtime.day}, "${showtime.title}" begins at ${showtime.time}, and there is a free table to book between ${dinnerTime.time}.`)
+            WriteToConsole.suggestion(showtime.day, showtime.title, showtime.time, dinnerTime.time)
           }
         }
       }

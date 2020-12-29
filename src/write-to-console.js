@@ -5,6 +5,10 @@
  * @version 1.0.0
  */
 
+import colors from 'colors'
+import UpperCaseFirst from 'upper-case-first'
+const { upperCaseFirst } = UpperCaseFirst
+
 /**
  * Represents a console logger.
  *
@@ -37,5 +41,29 @@ export class WriteToConsole {
    */
   static scrapingReservationsSucceed () {
     console.log('Scraping possible reservations...OK')
+  }
+
+  /**
+   * Prints out a title to show that underneath there will come suggestions.
+   */
+  static suggestionsStart () {
+    console.log('\nSuggestions\n===========')
+  }
+
+  /**
+   * Console log suggestions for day, movie and time to book a table.
+   *
+   * @param {string} day - The day for the occasion.
+   * @param {string} movieTitle - The title of the movie.
+   * @param {string} showTime - The time the movie starts
+   * @param {string} dinnerTime - The time a table can be booked between.
+   */
+  static suggestion (day, movieTitle, showTime, dinnerTime) {
+    // Parse the dinner time hours.
+    const dinnerTimeArray = dinnerTime.split('-')
+    const dinnerTimeMap = dinnerTimeArray.map(time => time + ':00')
+    dinnerTime = dinnerTimeMap.join('-')
+
+    console.log(`* On ${upperCaseFirst(day)}, ${colors.red(`"${movieTitle}"`)} begins at ${showTime}, and there is a free table to book between ${dinnerTime}.`)
   }
 }
