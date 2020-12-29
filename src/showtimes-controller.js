@@ -47,8 +47,13 @@ export class ShowtimesController {
     const dayId = this._createDayId()
 
     for (let i = 1; i < 4; i++) {
-      let res = await fetch(`${this._url}/check?day=${dayId}&movie=0${i}`)
-      res = await res.json()
+      let res
+      try {
+        res = await fetch(`${this._url}/check?day=${dayId}&movie=0${i}`)
+        res = await res.json()
+      } catch {
+        throw new Error(`Couldn't fetch ${this._url}/check?day=${dayId}&movie=0${i}`)
+      }
       for (let j = 0; j < res.length; j++) {
         // Checks if there is any available seats, if so, push it to available showtimes.
         if (res[j].status === 1) {
