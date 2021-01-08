@@ -74,6 +74,8 @@ export class Application {
    *
    * @param {string} url - The url.
    *
+   * @throws {Error} Will throw an error if no argument is specified.
+   * @throws {Error} Will throw an error if argument isn't a valid url.
    */
   set url (url) {
     if (typeof url === 'undefined') {
@@ -86,7 +88,16 @@ export class Application {
   }
 
   /**
-   * Runs the application.
+   * Runs the application. Prints out suggestions for day, movie and time to book a table.
+   *
+   * @throws {Error} Will throw an error if an url couldn't get scraped for links.
+   * @throws {Error} Will throw an error if a calendar couldn't get scraped.
+   * @throws {Error} Will throw an error if the calendars shares no available day.
+   * @throws {Error} Will throw an error if the day isn't friday, saturday or sunday.
+   * @throws {Error} Will throw an error if a movie couldn't be fetched.
+   * @throws {Error} Will throw an error if the movie's name couldn't be scraped.
+   * @throws {Error} Will throw an error if the login couldn't be fetched.
+   * @throws {Error} Will throw an error if the booking site couldn't be fetched.
    */
   async run () {
     await this._scrapeLinks()
@@ -98,6 +109,8 @@ export class Application {
 
   /**
    * Scrape links to calender, cinema and restaurant.
+   *
+   * @throws {Error} Will throw an error if an url couldn't get scraped for links.
    */
   async _scrapeLinks () {
     this._links = await LinkScraper.scrapeWebsiteLinks(this._url)
@@ -106,6 +119,9 @@ export class Application {
 
   /**
    * Scrape available day(s) on everyone's calendars.
+   *
+   * @throws {Error} Will throw an error if a calendar couldn't get scraped.
+   * @throws {Error} Will throw an error if the calendars shares no available day.
    */
   async _scrapeAvailableDays () {
     const calendarAvailabilityController = new CalendarAvailabilityController()
@@ -119,6 +135,10 @@ export class Application {
 
   /**
    * Scrape available showtimes.
+   *
+   * @throws {Error} Will throw an error if the day isn't friday, saturday or sunday.
+   * @throws {Error} Will throw an error if a movie couldn't be fetched.
+   * @throws {Error} Will throw an error if the movie's name couldn't be scraped.
    */
   async _scrapeShowtimes () {
     const showtimesPromise = []
@@ -133,6 +153,9 @@ export class Application {
 
   /**
    * Scrape possible dinning reservations.
+   *
+   * @throws {Error} Will throw an error if the login couldn't be fetched.
+   * @throws {Error} Will throw an error if the booking site couldn't be fetched.
    */
   async _scrapeDinningReservations () {
     const dinningTimesPromise = []

@@ -18,6 +18,8 @@ export class LinkScraper {
    * Scrapes a website of its links.
    *
    * @param {string} url - The url to be scraped.
+   * @throws {Error} Will throw an error if an url couldn't get scraped for links.
+   *
    * @returns {string[]} An array containing the scraped links.
    */
   static async scrapeWebsiteLinks (url) {

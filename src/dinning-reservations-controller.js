@@ -47,6 +47,9 @@ export class DinningReservationsController {
   /**
    * Returns the possible dinning reservations on a weekend day(friday, saturday or sunday).
    *
+   * @throws {Error} Will throw an error if the login couldn't be fetched.
+   * @throws {Error} Will throw an error if the booking site couldn't be fetched.
+   *
    * @returns {object[]} An array containing objects with available times for dinning reservations.
    */
   async getAvailableDinningTimes () {
@@ -70,6 +73,8 @@ export class DinningReservationsController {
 
   /**
    * Log in on the booking site and saves its cookie.
+   *
+   * @throws {Error} Will throw an error if the login couldn't be fetched.
    */
   async _getLoginCookie () {
     let res
@@ -90,6 +95,8 @@ export class DinningReservationsController {
 
   /**
    * Gets the plain text from the booking site.
+   *
+   * @throws {Error} Will throw an error if the booking site couldn't be fetched.
    *
    * @returns {string} The content as plain text.
    */

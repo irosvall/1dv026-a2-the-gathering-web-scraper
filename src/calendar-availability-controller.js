@@ -19,6 +19,9 @@ export class CalendarAvailabilityController {
    * Checks which day(s) all calendars are available.
    *
    * @param {string} url - A url that contains links to people's calendars.
+   * @throws {Error} Will throw an error if an url couldn't get scraped for links.
+   * @throws {Error} Will throw an error if a calendar couldn't get scraped.
+   *
    * @returns {string[]} List containing which weekend day(s) are available.
    */
   async getAvailableDays (url) {
@@ -45,6 +48,8 @@ export class CalendarAvailabilityController {
    * Scrapes a website of its links.
    *
    * @param {string} url - The url to be scraped.
+   * @throws {Error} Will throw an error if a calendar couldn't get scraped.
+   *
    * @returns {string[]} List containing 'ok' if the day is available.
    */
   async _scrapeIfAvailable (url) {
@@ -65,6 +70,7 @@ export class CalendarAvailabilityController {
    * The days that are 'ok' gets pushed into the available days list.
    *
    * @param {string[]} daysOk - An array containing 'ok' if the day is free.
+   *
    * @returns {string[]} An array of available weekend days.
    */
   _parseAvailableDays (daysOk) {

@@ -40,6 +40,10 @@ export class ShowtimesController {
   /**
    * Returns the available showtimes on a weekend day(friday, saturday or sunday).
    *
+   * @throws {Error} Will throw an error if the day isn't friday, saturday or sunday.
+   * @throws {Error} Will throw an error if a movie couldn't be fetched.
+   * @throws {Error} Will throw an error if the movie's name couldn't be scraped.
+   *
    * @returns {object[]} An array containing objects with available showtimes.
    */
   async getAvailableShowtimes () {
@@ -74,6 +78,8 @@ export class ShowtimesController {
    * Scrape the cinema page for a movie's title.
    *
    * @param {string} titleId - The id of the movie.
+   * @throws {Error} Will throw an error if the movie's name couldn't be scraped.
+   *
    * @returns {string} The title of the movie.
    */
   async _scrapeMovieTitle (titleId) {
@@ -90,6 +96,8 @@ export class ShowtimesController {
 
   /**
    * Creates a id for a weekend day.
+   *
+   * @throws {Error} Will throw an error if the day isn't friday, saturday or sunday.
    *
    * @returns {string} The day id.
    */
