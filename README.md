@@ -1,5 +1,9 @@
 # Assignment A2 - The Gathering Web Scraper
 
+This application was a project I made as a part of my studies at Linnaeus University, completed 2021-01-08.
+
+## The assignment description
+
 In this assignment, you got to help three friends, Peter, Paul, and Mary, with planning their once a month gathering. Once a month, they gather to watch a movie and then dine at their favorite restaurant. It is quite difficult for the friends to plan a gathering because they first have to find at least one day when everyone can then find a movie, to finally find a time when a table is free to book at the restaurant.
 
 The friends have their calendars available online on a website, and the cinema and restaurant they visit also have websites. The friends realize that the planning of an evening should be able to be automated but do not know how to do it. What they do know is that they definitely do not need a GUI and want to run the application from a command prompt, and that Peter prefers Windows, Paul prefers macOS and Mary prefers Linux (#1).
